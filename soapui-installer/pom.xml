@@ -40,7 +40,49 @@
                     <finalName>${project.name.full}</finalName>
                 </configuration>
             </plugin>
-
+            
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.24</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>${basedir}/target/${project.name.visible}-${project.version}.exe</outfile>
+                            <jar>soapui-${project.version}.jar</jar>
+                            <errTitle>${project.name.visible}-${project.version}</errTitle>
+                            <stayAlive>true</stayAlive>
+                            <classPath>
+                                <mainClass>com.eviware.soapui.SoapUI</mainClass>
+                                <jarLocation>../lib</jarLocation>
+                            </classPath>
+                            <dontWrapJar>true</dontWrapJar>
+                            <icon>${basedir}/src/install4j/resources/images/SoapUI-OS-5.2.ico</icon>
+                            <jre>
+                                <path>%JAVA_HOME%</path>
+                                <minVersion>1.8.0_181</minVersion>
+                                <initialHeapSize>256</initialHeapSize>
+                                <maxHeapSize>1024</maxHeapSize>
+                                <opts>
+                                    <opt>-XX:+CMSClassUnloadingEnabled</opt>
+                                    <opt>-XX:+CMSPermGenSweepingEnabled</opt>
+                                    <opt>-XX:MinHeapFreeRatio=20</opt>
+                                    <opt>-XX:MaxHeapFreeRatio=40</opt>                                    
+                                    <opt>-Dsoapui.properties=soapui.properties</opt>
+                                    <opt>-splash:SoapUI-Spashscreen.png</opt>
+                                </opts>                                
+                            </jre>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
             <plugin>
                 <groupId>org.sonatype.install4j</groupId>
                 <artifactId>install4j-maven-plugin</artifactId>

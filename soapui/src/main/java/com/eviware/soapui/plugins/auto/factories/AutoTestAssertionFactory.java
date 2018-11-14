@@ -16,11 +16,15 @@
 
 package com.eviware.soapui.plugins.auto.factories;
 
+import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.wsdl.panels.assertions.AssertionListEntry;
 import com.eviware.soapui.impl.wsdl.teststeps.WsdlMessageAssertion;
 import com.eviware.soapui.impl.wsdl.teststeps.assertions.AbstractTestAssertionFactory;
+import com.eviware.soapui.model.testsuite.Assertable;
 import com.eviware.soapui.plugins.SoapUIFactory;
 import com.eviware.soapui.plugins.auto.PluginTestAssertion;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Created by ole on 15/06/14.
@@ -53,4 +57,17 @@ public class AutoTestAssertionFactory extends AbstractTestAssertionFactory imple
     public String getCategory() {
         return category;
     }
+    
+    @Override
+    public boolean canAssert(Assertable assertable) {
+        try {
+            Method method = testAssertionClass.getMethod("canAssert", Assertable.class);
+            return (boolean) method.invoke(null, assertable);
+        } catch (NoSuchMethodException ignore) {
+            
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            SoapUI.logError(ex);
+        }
+        return super.canAssert(assertable);
+    }    
 }
